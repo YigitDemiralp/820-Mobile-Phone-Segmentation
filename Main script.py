@@ -31,15 +31,17 @@ plt.show()
 
 plt.title("Cumulative Explained Variance")
 plt.plot(range(1, len(varexp)+1), np.cumsum(varexp))
-plt.axhline(.95, color = 'r')
+plt.axhline(.95, color = 'r', label = '.95')
+trans = plt.get_xaxis_transform() # x in data untis, y in axes fraction
+plt.annotate('0.95', xy=(22, .95), xycoords='data', annotation_clip=False)
 plt.show()
 
 
-KRANGE = range(2, 21)
+KRANGE = range(2, 20)
 inertias = []
-for k in ks:
+for k in KRANGE:
     # Create a KMeans instance with k clusters: model
-    model = KMeans(n_clusters = k,  random_state = 455)
+    model = KMeans(n_clusters = k,  random_state = 455, )
     
     # Fit model to samples
     model.fit(scaled_df)
@@ -48,10 +50,10 @@ for k in ks:
     inertias.append(model.inertia_)
     
 # Plot ks vs inertias
-plt.plot(ks, inertias, '-o')
+plt.plot(KRANGE, inertias, '-o')
 plt.xlabel('number of clusters, k')
 plt.ylabel('inertia')
-plt.xticks(ks)
+plt.xticks(KRANGE)
 plt.title('Selecting Number of Clusters')
 plt.show()
 
@@ -66,7 +68,7 @@ for k in KRANGE:
  ss.append(metrics.silhouette_score(scaled_df, lab))
 # the plot 
 sns.lineplot(KRANGE, ss)
-plt.xticks(ks)
+plt.xticks(KRANGE)
 plt.show()
 
 
@@ -75,4 +77,18 @@ k6_labs = k6.fit_predict(scaled_df)
 
 # plot
 skplt.metrics.plot_silhouette(scaled_df, k6_labs)
+plt.show()
+
+
+corr = df_train.corr()
+mask = np.triu(np.ones_like(corr, dtype=bool))
+f, ax = plt.subplots(figsize=(10, 5))
+cmap = sns.diverging_palette(230, 20, as_cmap=True)
+sns.heatmap(corr, mask=mask, cmap=cmap, vmax=.3, center=0,
+            square=True, linewidths=.5,vmin = -1, vmax = 1, cbar_kws={"shrink": .5}).set(title='Correlation Matrix')
+plt.show()
+
+
+sns.stripplot(x="price_range", y="ram",  data=df_train, palette="Set1")
+plt.title('Price Range vs Ram')
 plt.show()
