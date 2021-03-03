@@ -22,3 +22,4 @@ Header | Description
 `three_g` | Has 3g
 `touch_screen` | Has a touch screen
 `wifi` | Has wifi
+`price_range` | four price categories (0-4)
