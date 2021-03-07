@@ -160,3 +160,8 @@ plt.show()
 sns.stripplot(x="price_range", y="ram",  data=df_train, palette="Set1")
 plt.title('Price Range vs Ram')
 plt.show()
+
+
+import random
+
+random.choices(['Ygt', 'Yuj', 'Mingwei'], k = 2)
