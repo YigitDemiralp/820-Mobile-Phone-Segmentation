@@ -5,7 +5,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import scikitplot as skplt
 from textblob import TextBlob
-
+from sklearn.preprocessing import StandardScaler
 from wordcloud import WordCloud
 import re
 
@@ -267,4 +267,17 @@ plt.show()
 
 #Amazon Rating plot
 sns.barplot(data = means_df, hue = 'Label', y = 'polarity', x = 'sent' )
+plt.show()
+
+means_df.index = means_df.Label
+means_df.sort_index(inplace = True)
+
+
+
+means_df.plot.bar(rot = 0)
+plt.show()
+
+
+
+means_df.drop(['Price','Label'], axis = 1).plot.bar(rot = 0)
 plt.show()
