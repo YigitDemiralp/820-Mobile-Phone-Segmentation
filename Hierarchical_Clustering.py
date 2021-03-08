@@ -1,4 +1,3 @@
-#Hierarchical Clustering
 # import basics packcages
 import pandas as pd
 import numpy as np
@@ -18,14 +17,29 @@ from sklearn import metrics
 from sklearn.decomposition import PCA
 import scikitplot as skplt
 
-# sklearn does have some functionality too, but mostly a wrapper to scipy
-from sklearn.metrics import pairwise_distances 
+# sklearn standarize
 from sklearn.preprocessing import StandardScaler
 
+# some "fun" packages for text analytics
+from wordcloud import WordCloud
+import re
+
+#imports for tokenizing
+import spacy
+from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer,TfidfVectorizer  
+import nltk #leading the edge
+from nltk.corpus import stopwords
+from nltk.tokenize import word_tokenize, RegexpTokenizer, WordPunctTokenizer, TweetTokenizer
+
+#sentiment score
+from afinn import Afinn
+from textblob import TextBlob
+
+########### LOAD DATASET ##############
 mobile = pd.read_csv("train.csv")
 mobile.shape
 
-#Distance for numeric
+#Dividing between numeric and categorical variables
 cols = ['blue','dual_sim','four_g','n_cores','three_g','touch_screen','wifi','price_range']
 
 for col in cols:
@@ -70,7 +84,6 @@ for i,m in enumerate(METHODS):
                 leaf_rotation= 90)
 
 plt.show()
-
 
 
 plt.figure(figsize=(20,5))
@@ -228,10 +241,9 @@ plt.title('Number of mobiles in each cluster')
 plt.show()
 
 
-
 ############K-means ##############
 
-k_mobile = pd.read_csv('train.csv')
+k_mobile = pd.read_csv('train.csv') #Load again just to make sure
 cols = ['blue','dual_sim','four_g','n_cores','three_g','touch_screen','wifi','price_range']
 
 for col in cols:
@@ -397,3 +409,126 @@ plt.show()
 
 
 ################ TOKENIZING AMAZON REVIEWS ###################
+
+amazon = pd.read_csv('Amazon_Unlocked_Mobile.csv')
+amazon.shape #413,840 rows and 6 columns
+amazon.head(3)
+amazon.Reviews.isna().sum() #62 nulls
+amazon = amazon.loc[amazon.Reviews.notna(), ] #drop them
+
+FIND = amazon.Reviews.str.contains("4g+")
+amazon.Reviews[FIND] #2778 reviews mentions the 4g attribute
+
+amazon['len'] = amazon.Reviews.str.len()
+print(amazon.len)
+
+reviews = amazon['Reviews'].tolist()
+reviews[:5]
+
+STOPWORDS = list(stopwords.words('english'))
+my_vocabulary = ['battery','memory','speed','4g','3g','cores','height','width','ram','wifi','price','camera','pixels']
+cv = CountVectorizer(stop_words=STOPWORDS, vocabulary=my_vocabulary)
+token = cv.fit_transform(reviews)
+token.toarray()
+token.shape #413,778 documents (reviews) and 68,406 tokens?
+len(cv.vocabulary_) #68,406 tokens, words
+cv.get_feature_names()
+
+PATTERN = "[\4g']+"
+df = pd.DataFrame(token.toarray(), columns=cv.get_feature_names())
+df.sort_values(by='4g', ascending=False).head(10)
+features_reviews = df.sum(axis=0).sort_values(ascending=False).reset_index()
+features_reviews = pd.DataFrame(features_reviews, columns={'index':'features', 0 :'count'})
+features_reviews.rename(columns={'index':'features',0:'count'}, inplace=True)
+features_reviews
+
+sns.barplot(x='features', y='count', data=features_reviews, palette="ch:.25")
+plt.title('Mobile features frequency in Amazon Reviews')
+plt.xlabel('frequency')
+plt.show()
+
+
+###### sentiment score ######
+afinn = Afinn(language='en')
+
+cv1 = CountVectorizer(stop_words=STOPWORDS, vocabulary=my_vocabulary,  ngram_range=(1,3))
+token = cv1.fit_transform(reviews)
+df_sentences = pd.DataFrame(token.toarray(), columns=cv1.get_feature_names())
+df_sentences
+
+FIND = amazon.Reviews.str.contains("memory+")
+memory_reviews = amazon.Reviews[FIND].reset_index()#7,769 reviews mentions the 4g attribute
+memory_reviews  = pd.DataFrame(memory_reviews)
+
+def sent_score_t(text):
+      return TextBlob(text).sentiment.subjectivity
+
+# a function that we can apply
+def sent_score_t1(text):
+  return TextBlob(text).sentiment.polarity
+
+# a function that we can apply
+def sent_score(text):
+  return afinn.score(text)
+
+memory_reviews['subjectivity'] = memory_reviews.Reviews.apply(sent_score_t)
+memory_reviews['polarity'] = memory_reviews.Reviews.apply(sent_score_t1)
+memory_reviews['Afinn_sent'] = memory_reviews.Reviews.apply(sent_score)
+
+
+FIND = amazon.Reviews.str.contains("battery+")
+battery_reviews = amazon.Reviews[FIND].reset_index() #1474 reviews mentions the 4g attribute
+battery_reviews  = pd.DataFrame(battery_reviews)
+
+battery_reviews['subjectivity'] = battery_reviews.Reviews.apply(sent_score_t)
+battery_reviews['polarity'] = battery_reviews.Reviews.apply(sent_score_t1)
+battery_reviews['Afinn_sent'] = battery_reviews.Reviews.apply(sent_score)
+
+FIND = amazon.Reviews.str.contains("camera+")
+camera_reviews = amazon.Reviews[FIND].reset_index() #25,453 reviews mentions the camera feature
+camera_reviews  = pd.DataFrame(camera_reviews)
+
+camera_reviews['subjectivity'] = camera_reviews.Reviews.apply(sent_score_t)
+camera_reviews['polarity'] = camera_reviews.Reviews.apply(sent_score_t1)
+camera_reviews['Afinn_sent'] = camera_reviews.Reviews.apply(sent_score)
+
+
+FIND = amazon.Reviews.str.contains("price+")
+price_reviews = amazon.Reviews[FIND].reset_index() #33,790 reviews mentions the price feature
+price_reviews  = pd.DataFrame(price_reviews)
+
+price_reviews['subjectivity'] = price_reviews.Reviews.apply(sent_score_t)
+price_reviews['polarity'] = price_reviews.Reviews.apply(sent_score_t1)
+price_reviews['Afinn_sent'] = price_reviews.Reviews.apply(sent_score)
+
+FIND = amazon.Reviews.str.contains("wifi+")
+wifi_reviews = amazon.Reviews[FIND].reset_index() #3,847 reviews mentions the price feature
+wifi_reviews  = pd.DataFrame(wifi_reviews)
+
+wifi_reviews['subjectivity'] = wifi_reviews.Reviews.apply(sent_score_t)
+wifi_reviews['polarity'] = wifi_reviews.Reviews.apply(sent_score_t1)
+wifi_reviews['Afinn_sent'] = wifi_reviews.Reviews.apply(sent_score)
+
+#See the sentiment score
+fig, axs = plt.subplots(1,5, figsize=(25,5))
+fig.tight_layout(pad=10)
+fig.suptitle('Sentiment score - Polarity')
+sns.histplot(x='polarity', data=battery_reviews, ax=axs[0], color='g')
+axs[0].set_title('Battery')
+sns.histplot(x='polarity',data=camera_reviews, ax=axs[1], color='r')
+axs[1].set_title('Camera')
+sns.histplot(x='polarity', data= price_reviews, ax=axs[2], color='b')
+axs[2].set_title('Price')
+sns.histplot(x='polarity', data=memory_reviews, ax=axs[3], color='y')
+axs[3].set_title('Memory')
+sns.histplot(x='polarity', data=wifi_reviews, ax=axs[4], color='c')
+axs[4].set_title('Wifi')
+plt.show()
+
+sns.scatterplot(x='polarity', y='Afinn_sent', data=memory_reviews, color='g')
+plt.show()
+
+sns.displot(x='subjectivity', data=battery_reviews)
+plt.show()
+
+sns.lineplot(x='subjectivity', data=battery_reviews)
