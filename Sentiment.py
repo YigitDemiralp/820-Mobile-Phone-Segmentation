@@ -335,8 +335,11 @@ amazon_df = find_amazon('Honor 6 Plus', 3)
 amazon_df = find_amazon('Huawei Nexus 6P', 3)
 amazon_df = find_amazon('Zenfone 2', 4)
 
+#Word lengths of each review
+def get_word_len(text):
+    return len(text.split())
 
-
+amazon_df['Word Count'] = amazon_df['Reviews'].apply(get_word_len)
 
 amazon_df['polarity'] = amazon_df.Reviews.apply(polarity_score)
 amazon_df['subjectivity'] = amazon_df.Reviews.apply(subjectivity_score)
@@ -391,7 +394,7 @@ plt.title('User Subjectivity Rating')
 plt.ylim([0,1])
 plt.show()
 
-#Amazon subjectivity
+#TechRadar subjectivity
 sns.barplot(data = tr_means, x = 'Label', y = 'subjectivity' , ci=None,
 palette ="tab10", order = [1,4,5,3,2])
 plt.ylabel('Subjectivity')
@@ -407,3 +410,35 @@ plt.show()
 
 amzn_means_df.drop(['Price','Label'], axis = 1).plot.bar(rot = 0)
 plt.show()
+
+word_below_200 = amazon_df[amazon_df['Word Count'] < 140]
+
+corr = word_below_200.corr()
+amazon_df.corr()
+
+
+# Generate a mask for the upper triangle
+mask = np.triu(np.ones_like(corr, dtype=bool))
+
+# Set up the matplotlib figure
+f, ax = plt.subplots(figsize=(11, 9))
+
+# Generate a custom diverging colormap
+cmap = sns.diverging_palette(230, 20, as_cmap=True)
+
+# Draw the heatmap with the mask and correct aspect ratio
+sns.heatmap(corr, mask=mask, cmap=cmap, center=0,
+            square=True, linewidths=.5, cbar_kws={"shrink": .5}, vmax =.5, vmin = -.5 )
+plt.title('Correlation Matrix')
+plt.show()
+
+
+#Wordcountplot
+sns.scatterplot(data = word_below_200, y = 'Word Count', x = 'polarity' )
+plt.xlabel('Polarity')
+plt.title('Word Count and Sentiment')
+plt.show()
+
+amazon_df[amazon_df['Word Count'] > 1000]
+
+amazon_df['Reviews'][310432]
