@@ -51,14 +51,7 @@ article.download()
 article.parse()
 
 
-
-wc = WordCloud(background_color="white")
-wordcloud = wc.generate(article.text)
-
-# # Display the  plot:
-plt.imshow(wordcloud)
-plt.axis("off")
-##plt.show()
+all_articles = article.text
 
 text = article.text.replace('\n', '')
 SGG_sentences = text.split('.')
@@ -73,11 +66,6 @@ mobile_df['subjectivity'] = mobile_df.Sentences.apply(subjectivity_score)
 
 mobile_df['sent'] = mobile_df.Sentences.apply(sent_score)
 
-mobile_df.plot.scatter('polarity', 'subjectivity')
-#plt.show()
-
-sns.lmplot('polarity', 'sent', data = mobile_df)
-#plt.show()
 
 #Nokia C7
 nokia_c7_url = 'https://www.techradar.com/reviews/phones/mobile-phones/nokia-c7-905015/review'
@@ -85,12 +73,7 @@ article = Article(nokia_c7_url)
 article.download()
 article.parse()
 
-wordcloud = wc.generate(article.text)
-
-plt.imshow(wordcloud)
-plt.axis("off")
-#plt.show()
-
+all_articles += article.text
 
 text = article.text.replace('\n', '')
 NC7_sentences = text.split('.')
@@ -99,11 +82,7 @@ NC7_df = pd.DataFrame({'Sentences' : NC7_sentences, 'Model' : 'Nokia C7', 'Label
 
 NC7_df = calculate_scores(NC7_df)
 
-NC7_df.plot.scatter('polarity', 'subjectivity')
-#plt.show()
 
-sns.lmplot('polarity', 'sent', data = NC7_df)
-#plt.show()
 mobile_df = mobile_df.append(NC7_df)
 
 #Asus Zenfone 5;
@@ -112,12 +91,7 @@ article = Article(asus_zenfone5)
 article.download()
 article.parse()
 
-wordcloud = wc.generate(article.text)
-
-plt.imshow(wordcloud)
-plt.axis("off")
-#plt.show()
-
+all_articles += article.text
 
 text = article.text.replace('\n', '')
 AZ5_sentences = text.split('.')
@@ -126,11 +100,6 @@ AZ5_df = pd.DataFrame({'Sentences' : AZ5_sentences, 'Model' : 'Asus Zenphone 5',
 
 AZ5_df = calculate_scores(AZ5_df)
 
-AZ5_df.plot.scatter('polarity', 'subjectivity')
-#plt.show()
-
-sns.lmplot('polarity', 'sent', data = AZ5_df)
-#plt.show()
 
 mobile_df = mobile_df.append(AZ5_df)
 
@@ -140,10 +109,7 @@ article = Article(motorola_moto_X)
 article.download()
 article.parse()
 
-wordcloud = wc.generate(article.text)
-plt.imshow(wordcloud)
-plt.axis("off")
-#plt.show()
+all_articles += article.text
 
 
 text = article.text.replace('\n', '')
@@ -153,11 +119,6 @@ MX_df = pd.DataFrame({'Sentences' : MX_sentences, 'Model' : 'Motorola Moto X', '
 
 MX_df = calculate_scores(MX_df)
 
-MX_df.plot.scatter('polarity', 'subjectivity')
-#plt.show()
-
-sns.lmplot('polarity', 'sent', data = MX_df)
-#plt.show()
 
 mobile_df = mobile_df.append(MX_df)
 
@@ -170,13 +131,9 @@ op_URL = 'https://www.techradar.com/sg/reviews/phones/mobile-phones/moto-x-play-
 article = Article(op_URL)
 article.download()
 article.parse()
-wc = WordCloud(background_color="white")
-wordcloud = wc.generate(article.text)
 
-# # Display the  plot:
-plt.imshow(wordcloud)
-plt.axis("off")
-# plt.show()
+
+all_articles += article.text
 
 text = article.text.replace('\n', '')
 one_sentences = text.split('.')
@@ -185,24 +142,15 @@ mxp_df = pd.DataFrame({'Sentences' : one_sentences, 'Model' : 'Motorola Moto X P
 
 mxp_df = calculate_scores(mxp_df)
 
-mxp_df.plot.scatter('polarity', 'subjectivity')
-# plt.show()
-
-sns.lmplot('polarity', 'sent', data = mxp_df)
-# plt.show()
 mobile_df = mobile_df.append(mxp_df)
 
 sam_URL = 'https://www.techradar.com/sg/reviews/samsung-galaxy-a8-review'
 article2 = Article(sam_URL)
 article2.download()
 article2.parse()
-wcd = WordCloud(background_color="white")
-wordcloud2 = wc.generate(article2.text)
 
-# # Display the  plot:
-plt.imshow(wordcloud2)
-plt.axis("off")
-# plt.show()
+all_articles += article2.text
+
 
 text = article2.text.replace('\n', '')
 sam_sentences = text.split('.')
@@ -211,27 +159,17 @@ sam_df = pd.DataFrame({'Sentences' : sam_sentences, 'Model' : 'Samsung Galaxy A8
 
 sam_df = calculate_scores(sam_df)
 
-sam_df.plot.scatter('polarity', 'subjectivity')
-# plt.show()
-
-sns.lmplot('polarity', 'sent', data = sam_df)
-# plt.show()
 mobile_df = mobile_df.append(sam_df)
 
 
 #Huawei Nexus 6P
-
 hua_URL = 'https://www.techradar.com/sg/reviews/phones/mobile-phones/nexus-6p-1305318/review'
 article2 = Article(hua_URL)
 article2.download()
 article2.parse()
-wcd = WordCloud(background_color="white")
-wordcloud2 = wc.generate(article2.text)
 
-# # Display the  plot:
-plt.imshow(wordcloud2)
-plt.axis("off")
-# plt.show()
+all_articles += article2.text
+
 
 text = article2.text.replace('\n', '')
 hua_sentences = text.split('.')
@@ -240,11 +178,7 @@ hua_df = pd.DataFrame({'Sentences' : hua_sentences, 'Model' : 'Huawei Nexus 6P 2
 
 hua_df = calculate_scores(hua_df)
 
-hua_df.plot.scatter('polarity', 'subjectivity')
-# plt.show()
 
-sns.lmplot('polarity', 'sent', data = hua_df)
-# plt.show()
 mobile_df = mobile_df.append(hua_df)
 
 
@@ -253,13 +187,10 @@ hon_URL = 'https://www.techradar.com/sg/reviews/phones/mobile-phones/honor-6-plu
 article = Article(hon_URL)
 article.download()
 article.parse()
-wc = WordCloud(background_color="white")
-wordcloud = wc.generate(article.text)
 
-# # Display the  plot:
-plt.imshow(wordcloud)
-plt.axis("off")
-# plt.show()
+
+all_articles += article.text
+
 
 text = article.text.replace('\n', '')
 one_sentences = text.split('.')
@@ -268,11 +199,7 @@ hon_df = pd.DataFrame({'Sentences' : one_sentences, 'Model' : 'Honor 6 plus X', 
 
 hon_df = calculate_scores(hon_df)
 
-hon_df.plot.scatter('polarity', 'subjectivity')
-# plt.show()
 
-sns.lmplot('polarity', 'sent', data = hon_df)
-# plt.show()
 mobile_df = mobile_df.append(hon_df)
 
 
@@ -281,26 +208,14 @@ one_URL = 'https://www.techradar.com/reviews/phones/mobile-phones/lg-optimus-g-p
 article = Article(one_URL)
 article.download()
 article.parse()
-wc = WordCloud(background_color="white")
-wordcloud = wc.generate(article.text)
 
-# # Display the  plot:
-plt.imshow(wordcloud)
-plt.axis("off")
-# plt.show()
+all_articles += article.text
+
 
 text = article.text.replace('\n', '')
 one_sentences = text.split('.')
-
 lg_df = pd.DataFrame({'Sentences' : one_sentences, 'Model' : 'LG Optimus G Pro', 'Label' : 4} )
-
 lg_df = calculate_scores(lg_df)
-lg_df.plot.scatter('polarity', 'subjectivity')
-# plt.show()
-
-sns.lmplot('polarity', 'sent', data = lg_df)
-# plt.show()
-
 mobile_df = mobile_df.append(lg_df)
 
 
@@ -310,13 +225,9 @@ ZTE_URL = 'https://www.techradar.com/reviews/phones/mobile-phones/asus-zenfone-2
 article2 = Article(ZTE_URL)
 article2.download()
 article2.parse()
-wcd = WordCloud(background_color="white")
-wordcloud2 = wc.generate(article2.text)
 
-# # Display the  plot:
-plt.imshow(wordcloud2)
-plt.axis("off")
-# plt.show()
+all_articles += article2.text
+
 
 text = article2.text.replace('\n', '')
 ZTE_sentences = text.split('.')
@@ -325,17 +236,54 @@ ZTE_df = pd.DataFrame({'Sentences' : ZTE_sentences, 'Model' : 'Asus Zenfone 2', 
 
 ZTE_df = calculate_scores(ZTE_df)
 
-ZTE_df.plot.scatter('polarity', 'subjectivity')
-# plt.show()
 
-sns.lmplot('polarity', 'sent', data = ZTE_df)
-# plt.show()
 mobile_df = mobile_df.append(ZTE_df)
 
-mobile_df.groupby('Model').mean()
+#Replace labels so it matches the latest cluster decision
+di = {0:1, 1:3, 2:5, 3:2, 4:4}
+mobile_df.replace({'Label' : di}, inplace = True)
+
+price_rank_dict = {1:1, 4:2, 5:3, 3:4, 2:5}  
+mobile_df['price_rank'] = mobile_df['Label'].map(price_rank_dict)
+
+#Summary Stats of Tech Radar DF
+tr_means = mobile_df.groupby('Model').mean().sort_values('price_rank')
+
 
 mobile_df.Model.unique()
+sns.set_palette(sns.color_palette("Paired", n_colors = 4))
+sns.scatterplot(x = 'polarity', y = 'subjectivity', data = mobile_df, hue = 'Label', palette = sns.color_palette("tab10", n_colors = 5))
+plt.title('Subjectivity & Polarity')
+plt.show()
 
+sns.scatterplot(x = 'polarity', y = 'sent', data = mobile_df, hue = 'Label', palette = sns.color_palette("tab10", n_colors = 5))
+plt.xlabel('Textblob Polarity')
+plt.ylabel('Afinn Score')
+plt.title('Afinn Score & Textblob Polarity')
+plt.show()
+
+#Wordcloud for all articles
+wordcloud = WordCloud(max_font_size = 150, max_words=100, background_color="white",width=1000, height=500 ).generate(all_articles)
+plt.figure()
+plt.imshow(wordcloud, interpolation="bilinear")
+plt.axis("off")
+plt.show()
+
+#Polarity plot
+g = sns.barplot(x = 'Label', y = 'polarity', data = tr_means,
+palette ="tab10", order = [1,4,5,3,2])
+plt.ylabel('Polarity')
+plt.xlabel('Label (Ordered by price low - high)')
+plt.title('Polarity Scores')
+plt.show()
+
+#Sentiment Score plot
+g = sns.barplot(x = 'Label', y = 'sent', data = tr_means,
+palette ="tab10", order = [1,4,5,3,2])
+plt.ylabel('Sentiment')
+plt.xlabel('Label (Ordered by price low - high)')
+plt.title('Sentiment Scores')
+plt.show()
 
 
 #Amazon Dataset
@@ -394,26 +342,68 @@ amazon_df['polarity'] = amazon_df.Reviews.apply(polarity_score)
 amazon_df['subjectivity'] = amazon_df.Reviews.apply(subjectivity_score)
 amazon_df['sent'] = amazon_df.Reviews.apply(sent_score)
 
-means_df = amazon_df.groupby('Model').mean()
-means_df.sort_values('Label', inplace = True)
-means_df
+amazon_df.replace({'Label' : di}, inplace = True)
 
-#Amazon Rating plot
-sns.barplot(data = means_df, x = 'Label', y = 'Rating' )
+
+amzn_means_df = amazon_df.groupby('Model').mean()
+amzn_means_df.sort_values('price_rank', inplace = True)
+
+
+
+
+
+#Amazon User Rating plot
+sns.barplot(data = amzn_means_df, x = 'Label', y = 'Rating' , ci=None,
+palette ="tab10", order = [1,4,5,3,2])
+plt.ylabel('User Rating')
+plt.xlabel('Label (Ordered by price low - high)')
+plt.title('User Reviews')
 plt.show()
 
-#Amazon Rating plot
-sns.barplot(data = means_df, hue = 'Label', y = 'polarity', x = 'sent' )
+#Textblob
+sns.barplot(data = amzn_means_df, x = 'Label', y = 'polarity' , ci=None,
+palette ="tab10", order = [1,4,5,3,2])
+plt.ylabel('Polarity')
+plt.xlabel('Label (Ordered by price low - high)')
+plt.title('TextBlob Rating')
+plt.show()
+
+
+#Afinn not included due to high variance
+# sns.barplot(data = amzn_means_df, x = 'Label', y = 'sent' ,
+# palette ="tab10", order = [1,4,5,3,2])
+# plt.ylabel('Sentiment')
+# plt.xlabel('Label (Ordered by price low - high)')
+# plt.title('Afinn Rating')
 # plt.show()
 
 
+#Amazon Rating plot
+sns.barplot(data = amzn_means_df, hue = 'Label', y = 'polarity', x = 'sent' )
+# plt.show()
 
+#Amazon subjectivity
+sns.barplot(data = amzn_means_df, x = 'Label', y = 'subjectivity' , ci=None,
+palette ="tab10", order = [1,4,5,3,2])
+plt.ylabel('Subjectivity')
+plt.xlabel('Label (Ordered by price low - high)')
+plt.title('User Subjectivity Rating')
+plt.ylim([0,1])
+plt.show()
 
+#Amazon subjectivity
+sns.barplot(data = tr_means, x = 'Label', y = 'subjectivity' , ci=None,
+palette ="tab10", order = [1,4,5,3,2])
+plt.ylabel('Subjectivity')
+plt.xlabel('Label (Ordered by price low - high)')
+plt.title('Expert Subjectivity Rating')
+plt.ylim([0,1])
+plt.show()
 
-means_df.plot.bar(rot = 0)
+amzn_means_df.plot.bar(rot = 0)
 plt.show()
 
 
 
-means_df.drop(['Price','Label'], axis = 1).plot.bar(rot = 0)
+amzn_means_df.drop(['Price','Label'], axis = 1).plot.bar(rot = 0)
 plt.show()
