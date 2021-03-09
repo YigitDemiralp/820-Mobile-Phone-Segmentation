@@ -251,11 +251,13 @@ tr_means = mobile_df.groupby('Model').mean().sort_values('price_rank')
 
 
 mobile_df.Model.unique()
+#Subjectivity & Polarity
 sns.set_palette(sns.color_palette("Paired", n_colors = 4))
 sns.scatterplot(x = 'polarity', y = 'subjectivity', data = mobile_df, hue = 'Label', palette = sns.color_palette("tab10", n_colors = 5))
 plt.title('Subjectivity & Polarity')
 plt.show()
 
+#Afinn vs TextBlob
 sns.scatterplot(x = 'polarity', y = 'sent', data = mobile_df, hue = 'Label', palette = sns.color_palette("tab10", n_colors = 5))
 plt.xlabel('Textblob Polarity')
 plt.ylabel('Afinn Score')
