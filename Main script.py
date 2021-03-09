@@ -152,7 +152,7 @@ corr = df_train.corr()
 mask = np.triu(np.ones_like(corr, dtype=bool))
 f, ax = plt.subplots(figsize=(10, 5))
 cmap = sns.diverging_palette(230, 20, as_cmap=True)
-sns.heatmap(corr, mask=mask, cmap=cmap, vmax=.3, center=0,
+sns.heatmap(corr, mask=mask, cmap=cmap, center=0,
             square=True, linewidths=.5,vmin = -1, vmax = 1, cbar_kws={"shrink": .5}).set(title='Correlation Matrix')
 plt.show()
 
@@ -161,7 +161,3 @@ sns.stripplot(x="price_range", y="ram",  data=df_train, palette="Set1")
 plt.title('Price Range vs Ram')
 plt.show()
 
-
-import random
-
-random.choices(['Ygt', 'Yuj', 'Mingwei'], k = 2)
